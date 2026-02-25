@@ -1,27 +1,41 @@
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
-public class UseCase5PalindromeCheckerApp {
+public class UseCase6PalindromeCheckerApp {
 
     public static void main(String[] args) {
         // Original string to check
-        String original = "deed";
+        String original = "madam";
 
-        // Create a stack of Characters
+        // Create a queue (FIFO)
+        Queue<Character> queue = new LinkedList<>();
+
+        // Create a stack (LIFO)
         Stack<Character> stack = new Stack<>();
 
-        // Push all characters of the string into the stack
+        // Enqueue and push each character
         for (int i = 0; i < original.length(); i++) {
-            stack.push(original.charAt(i));
+            char ch = original.charAt(i);
+            queue.add(ch);    // enqueue
+            stack.push(ch);   // push
         }
 
-        // Build the reversed string by popping from stack
-        String reversed = "";
-        while (!stack.isEmpty()) {
-            reversed += stack.pop();
+        boolean isPalindrome = true;
+
+        // Compare dequeue and pop characters
+        while (!queue.isEmpty() && !stack.isEmpty()) {
+            char fromQueue = queue.remove();  // dequeue
+            char fromStack = stack.pop();     // pop
+
+            if (fromQueue != fromStack) {
+                isPalindrome = false;
+                break;
+            }
         }
 
-        // Compare original and reversed strings
-        if (original.equals(reversed)) {
+        // Print result
+        if (isPalindrome) {
             System.out.println("The string \"" + original + "\" is a Palindrome.");
         } else {
             System.out.println("The string \"" + original + "\" is NOT a Palindrome.");
