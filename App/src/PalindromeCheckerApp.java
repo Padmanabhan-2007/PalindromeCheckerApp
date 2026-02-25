@@ -1,20 +1,30 @@
-public class UseCase3PalindromeCheckerApp  {
+public class UseCase4PalindromeCheckerApp {
 
     public static void main(String[] args) {
+        // Original string to check
+        String original = "racecar";
 
-        // Original string
-        String original = "level";
+        // Convert string to character array
+        char[] chars = original.toCharArray();
 
-        // Variable to store reversed string
-        String reversed = "";
+        // Two-pointer approach initialization
+        int start = 0;
+        int end = chars.length - 1;
 
-        // Reverse the string using for loop
-        for (int i = original.length() - 1; i >= 0; i--) {
-            reversed = reversed + original.charAt(i);
+        boolean isPalindrome = true;
+
+        // Compare characters from start and end
+        while (start < end) {
+            if (chars[start] != chars[end]) {
+                isPalindrome = false;
+                break;
+            }
+            start++;
+            end--;
         }
 
-        // Compare original and reversed using equals()
-        if (original.equals(reversed)) {
+        // Print the result
+        if (isPalindrome) {
             System.out.println("The string \"" + original + "\" is a Palindrome.");
         } else {
             System.out.println("The string \"" + original + "\" is NOT a Palindrome.");
