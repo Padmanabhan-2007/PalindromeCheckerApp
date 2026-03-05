@@ -1,86 +1,85 @@
-public class UseCase8PalindromeCheckerApp {
+import java.util.Stack;
+import java.util.Deque;
+import java.util.ArrayDeque;
 
-    // Node class for singly linked list
-    static class Node {
-        char data;
-        Node next;
+// Strategy Interface
+interface PalindromeStrategy {
+    boolean isPalindrome(String str);
+}
 
-        Node(char data) {
-            this.data = data;
-            this.next = null;
+// Stack Strategy Implementation
+class StackStrategy implements PalindromeStrategy {
+
+    public boolean isPalindrome(String str) {
+        Stack<Character> stack = new Stack<>();
+
+        // Push all characters into stack
+        for (char c : str.toCharArray()) {
+            stack.push(c);
         }
-    }
 
-    // Function to create linked list from a string
-    public static Node createLinkedList(String str) {
-        Node head = null, tail = null;
-        for (int i = 0; i < str.length(); i++) {
-            Node newNode = new Node(str.charAt(i));
-            if (head == null) {
-                head = newNode;
-                tail = newNode;
-            } else {
-                tail.next = newNode;
-                tail = newNode;
+        // Compare while popping
+        for (char c : str.toCharArray()) {
+            if (c != stack.pop()) {
+                return false;
             }
         }
-        return head;
+
+        return true;
     }
+}
 
-    // Function to reverse a linked list
-    public static Node reverseList(Node head) {
-        Node prev = null, current = head, next = null;
-        while (current != null) {
-            next = current.next;
-            current.next = prev;
-            prev = current;
-            current = next;
-        }
-        return prev;
-    }
+// Deque Strategy Implementation
+class DequeStrategy implements PalindromeStrategy {
 
-    // Function to check if linked list is palindrome
-    public static boolean isPalindrome(Node head) {
-        if (head == null || head.next == null) return true;
+    public boolean isPalindrome(String str) {
+        Deque<Character> deque = new ArrayDeque<>();
 
-        // Find middle using fast and slow pointers
-        Node slow = head, fast = head;
-        while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
+        // Add characters to deque
+        for (char c : str.toCharArray()) {
+            deque.add(c);
         }
 
-        // Reverse second half
-        Node secondHalf = reverseList(slow.next);
-
-        // Compare first and second halves
-        Node firstHalf = head;
-        Node secondCopy = secondHalf; // to restore list later if needed
-        boolean palindrome = true;
-        while (secondHalf != null) {
-            if (firstHalf.data != secondHalf.data) {
-                palindrome = false;
-                break;
+        // Compare front and rear
+        while (deque.size() > 1) {
+            if (deque.removeFirst() != deque.removeLast()) {
+                return false;
             }
-            firstHalf = firstHalf.next;
-            secondHalf = secondHalf.next;
         }
 
-        // Optional: restore the original list
-        slow.next = reverseList(secondCopy);
+        return true;
+    }
+}
 
-        return palindrome;
+// Main Application
+public class    PalindromeCheckerApp {
+
+    private PalindromeStrategy strategy;
+
+    // Constructor Injection
+    public PalindromeCheckerApp(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public boolean checkPalindrome(String str) {
+        return strategy.isPalindrome(str);
     }
 
     public static void main(String[] args) {
-        String original = "racecar";
 
-        Node head = createLinkedList(original);
+        String input = "racecar";
 
-        if (isPalindrome(head)) {
-            System.out.println("The string \"" + original + "\" is a Palindrome.");
+        // Choose strategy dynamically
+        PalindromeStrategy strategy = new StackStrategy();
+        // PalindromeStrategy strategy = new DequeStrategy();
+
+        PalindromeCheckerApp app =
+                new PalindromeCheckerApp(strategy);
+
+        if (app.checkPalindrome(input)) {
+            System.out.println("The string \"" + input + "\" is a Palindrome.");
         } else {
-            System.out.println("The string \"" + original + "\" is NOT a Palindrome.");
+            System.out.println("The string \"" + input + "\" is NOT a Palindrome.");
         }
     }
 }
